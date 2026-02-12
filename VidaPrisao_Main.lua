@@ -437,7 +437,27 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-print("[VidaPrisao] Carregado com sucesso!")
+print("[VidaPrisao] Carregado com sucesso!"), 0, 35)
+    Button.Font = Enum.Font.Gotham
+    Button.Text = text
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextSize = 12
+    
+    BtnCorner.CornerRadius = UDim.new(0, 6)
+    BtnCorner.Parent = Button
+    
+    Indicator.Parent = Button
+    Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    Indicator.Position = UDim2.new(1, -20, 0.5, -8)
+    Indicator.Size = UDim2.new(0, 16, 0, 16)
+    Indicator.BorderSizePixel = 0
+    
+    IndicatorCorner.CornerRadius = UDim.new(1, 0)
+    IndicatorCorner.Parent = Indicator
+    
+    return Button, Indicator
+end
+
 local function createKeyBox(text, position)
     local Box = Instance.new("TextBox")
     Box.Parent = MainFrame
