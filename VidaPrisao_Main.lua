@@ -18,7 +18,6 @@ task.wait(1)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "VidaPrisaoGui"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game.CoreGui
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = ScreenGui
@@ -38,7 +37,7 @@ UIStroke.Thickness = 3
 local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
 Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, -75, 0, 40)
+Title.Size = UDim2.new(1, -40, 0, 40)
 Title.Font = Enum.Font.GothamBold
 Title.Text = "Arabe Scripts"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -61,8 +60,32 @@ local rejoinCorner = Instance.new("UICorner")
 rejoinCorner.CornerRadius = UDim.new(0, 6)
 rejoinCorner.Parent = rejoinBtn
 
-rejoinBtn.MouseButton1Click:Connect(function()
-    TeleportService:Teleport(game.PlaceId, player)
+local dragging, dragInput, dragStart, startPos
+
+Title.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Title.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 end)
 
 local SettingsBtn = Instance.new("TextButton")
@@ -121,34 +144,6 @@ local flySpeed = 65
 
 SettingsBtn.MouseButton1Click:Connect(function()
     SettingsFrame.Visible = not SettingsFrame.Visible
-end)
-
-local dragging, dragInput, dragStart, startPos
-
-Title.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = MainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-Title.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-UIS.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
 end)
 
 local SpeedLabel = Instance.new("TextLabel")
@@ -234,210 +229,46 @@ KeyBox.FocusLost:Connect(function()
     end
 end)
 
--- Sistema de Tabs
-local TabContainer = Instance.new("ScrollingFrame")
-TabContainer.Parent = MainFrame
-TabContainer.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-TabContainer.Position = UDim2.new(0, 5, 0, 45)
-TabContainer.Size = UDim2.new(1, -10, 0, 35)
-TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
-TabContainer.ScrollBarThickness = 0
-TabContainer.ScrollingDirection = Enum.ScrollingDirection.X
-TabContainer.BorderSizePixel = 0
-
-local TabCorner = Instance.new("UICorner")
-TabCorner.CornerRadius = UDim.new(0, 6)
-TabCorner.Parent = TabContainer
-
-local TabLayout = Instance.new("UIListLayout")
-TabLayout.Parent = TabContainer
-TabLayout.FillDirection = Enum.FillDirection.Horizontal
-TabLayout.Padding = UDim.new(0, 5)
-TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-local ContentFrame = Instance.new("Frame")
-ContentFrame.Parent = MainFrame
-ContentFrame.BackgroundTransparency = 1
-ContentFrame.Position = UDim2.new(0, 5, 0, 85)
-ContentFrame.Size = UDim2.new(1, -10, 1, -90)
-
-local tabs = {}
-local currentTab = nil
-
-local function createTab(name, index)
-    local TabButton = Instance.new("TextButton")
-    TabButton.Parent = TabContainer
-    TabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    TabButton.Size = UDim2.new(0, 65, 1, 0)
-    TabButton.Font = Enum.Font.Gotham
-    TabButton.Text = name
-    TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-    TabButton.TextSize = 13
-    TabButton.BorderSizePixel = 0
-    TabButton.LayoutOrder = index
-    
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 6)
-    BtnCorner.Parent = TabButton
-    
-    local TabContent = Instance.new("ScrollingFrame")
-    TabContent.Parent = ContentFrame
-    TabContent.BackgroundTransparency = 1
-    TabContent.Size = UDim2.new(1, 0, 1, 0)
-    TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
-    TabContent.ScrollBarThickness = 4
-    TabContent.Visible = false
-    TabContent.BorderSizePixel = 0
-    
-    local Layout = Instance.new("UIListLayout")
-    Layout.Parent = TabContent
-    Layout.Padding = UDim.new(0, 8)
-    Layout.SortOrder = Enum.SortOrder.LayoutOrder
-    
-    Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        TabContent.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
-    end)
-    
-    tabs[name] = {button = TabButton, content = TabContent}
-    
-    TabButton.MouseButton1Click:Connect(function()
-        for _, tab in pairs(tabs) do
-            tab.button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            tab.button.TextColor3 = Color3.fromRGB(200, 200, 200)
-            tab.content.Visible = false
-        end
-        TabButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TabContent.Visible = true
-        currentTab = name
-    end)
-    
-    return TabContent
-end
-
-local function createButton(parent, text, callback)
+local function createButton(text, position)
     local Button = Instance.new("TextButton")
-    Button.Parent = parent
-    Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    Button.Size = UDim2.new(1, 0, 0, 35)
+    local BtnCorner = Instance.new("UICorner")
+    local Indicator = Instance.new("Frame")
+    local IndicatorCorner = Instance.new("UICorner")
+    
+    Button.Parent = MainFrame
+    Button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    Button.Position = position
+    Button.Size = UDim2.new(0, 130, 0, 35)
     Button.Font = Enum.Font.Gotham
     Button.Text = text
     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
     Button.TextSize = 13
     
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 6)
-    Corner.Parent = Button
+    BtnCorner.CornerRadius = UDim.new(0, 6)
+    BtnCorner.Parent = Button
     
-    local Indicator = Instance.new("Frame")
     Indicator.Parent = Button
     Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    Indicator.Position = UDim2.new(1, -20, 0.5, -6)
-    Indicator.Size = UDim2.new(0, 12, 0, 12)
+    Indicator.Position = UDim2.new(1, -25, 0.5, -8)
+    Indicator.Size = UDim2.new(0, 16, 0, 16)
     Indicator.BorderSizePixel = 0
     
-    local IndCorner = Instance.new("UICorner")
-    IndCorner.CornerRadius = UDim.new(1, 0)
-    IndCorner.Parent = Indicator
-    
-    Button.MouseButton1Click:Connect(function()
-        if callback then
-            local active = callback()
-            if active ~= nil then
-                Indicator.BackgroundColor3 = active and Color3.fromRGB(50, 255, 50) or Color3.fromRGB(255, 50, 50)
-            end
-        end
-    end)
+    IndicatorCorner.CornerRadius = UDim.new(1, 0)
+    IndicatorCorner.Parent = Indicator
     
     return Button, Indicator
 end
 
--- Criar Tabs
-local FireTab = createTab("Fire", 1)
-local TpTab = createTab("TP's", 2)
-local OthersTab = createTab("Others", 3)
-
-TabLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    TabContainer.CanvasSize = UDim2.new(0, TabLayout.AbsoluteContentSize.X + 10, 0, 0)
-end)
-
--- Tab 1: Fire
-local aimbotActive = false
-local espActive = false
-
-createButton(FireTab, "Aimbot", function()
-    aimbotActive = not aimbotActive
-    print("Aimbot:", aimbotActive)
-    return aimbotActive
-end)
-
-createButton(FireTab, "ESP", function()
-    espActive = not espActive
-    print("ESP:", espActive)
-    return espActive
-end)
-
--- Tab 2: TP's
-local clickTpActive = false
-
-createButton(TpTab, "Click TP", function()
-    clickTpActive = not clickTpActive
-    print("Click TP:", clickTpActive)
-    return clickTpActive
-end)
-
-createButton(TpTab, "Criminal", function()
-    print("TP Criminal")
-    -- Adicionar código de TP aqui
-end)
-
-createButton(TpTab, "Camper", function()
-    print("TP Camper")
-    -- Adicionar código de TP aqui
-end)
-
-createButton(TpTab, "Players", function()
-    print("TP Players")
-    -- Adicionar código de TP aqui
-end)
-
--- Tab 3: Others
-local godmodeActive = false
-local ghostActive = false
-local flyActive = false
-
-createButton(OthersTab, "Godmode", function()
-    godmodeActive = not godmodeActive
-    print("Godmode:", godmodeActive)
-    return godmodeActive
-end)
-
-createButton(OthersTab, "Ghost", function()
-    ghostActive = not ghostActive
-    print("Ghost:", ghostActive)
-    return ghostActive
-end)
-
-createButton(OthersTab, "Fly", function()
-    flyActive = not flyActive
-    print("Fly:", flyActive)
-    return flyActive
-end)
-
--- Ativar primeira tab
-tabs["Fire"].button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-tabs["Fire"].button.TextColor3 = Color3.fromRGB(255, 255, 255)
-tabs["Fire"].content.Visible = true
-currentTab = "Fire"
-
--- Toggle Menu com tecla
-UIS.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == toggleKey then
-        MainFrame.Visible = not MainFrame.Visible
-    end
-end)
-
-print("[VidaPrisao] Carregado com sucesso!"), 0, 35)
+local function createSmallButton(text, position)
+    local Button = Instance.new("TextButton")
+    local BtnCorner = Instance.new("UICorner")
+    local Indicator = Instance.new("Frame")
+    local IndicatorCorner = Instance.new("UICorner")
+    
+    Button.Parent = MainFrame
+    Button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    Button.Position = position
+    Button.Size = UDim2.new(0, 95, 0, 35)
     Button.Font = Enum.Font.Gotham
     Button.Text = text
     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
