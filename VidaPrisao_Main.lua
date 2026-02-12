@@ -352,6 +352,35 @@ local function createButton(parent, text, callback)
     return Button, Indicator
 end
 
+local function createSmallButton(text, position)
+    local Button = Instance.new("TextButton")
+    Button.Parent = MainFrame
+    Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    Button.Position = position
+    Button.Size = UDim2.new(0, 90, 0, 35)
+    Button.Font = Enum.Font.Gotham
+    Button.Text = text
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextSize = 12
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = Button
+    
+    local Indicator = Instance.new("Frame")
+    Indicator.Parent = Button
+    Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    Indicator.Position = UDim2.new(1, -20, 0.5, -6)
+    Indicator.Size = UDim2.new(0, 12, 0, 12)
+    Indicator.BorderSizePixel = 0
+    
+    local IndCorner = Instance.new("UICorner")
+    IndCorner.CornerRadius = UDim.new(1, 0)
+    IndCorner.Parent = Indicator
+    
+    return Button, Indicator
+end
+
 -- Criar Tabs
 local FireTab = createTab("Fire", 1)
 local TpTab = createTab("TP's", 2)
@@ -437,26 +466,7 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-print("[VidaPrisao] Carregado com sucesso!"), 0, 35)
-    Button.Font = Enum.Font.Gotham
-    Button.Text = text
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.TextSize = 12
-    
-    BtnCorner.CornerRadius = UDim.new(0, 6)
-    BtnCorner.Parent = Button
-    
-    Indicator.Parent = Button
-    Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    Indicator.Position = UDim2.new(1, -20, 0.5, -8)
-    Indicator.Size = UDim2.new(0, 16, 0, 16)
-    Indicator.BorderSizePixel = 0
-    
-    IndicatorCorner.CornerRadius = UDim.new(1, 0)
-    IndicatorCorner.Parent = Indicator
-    
-    return Button, Indicator
-end
+
 
 local function createKeyBox(text, position)
     local Box = Instance.new("TextBox")
