@@ -352,35 +352,6 @@ local function createButton(parent, text, callback)
     return Button, Indicator
 end
 
-local function createSmallButton(text, position)
-    local Button = Instance.new("TextButton")
-    Button.Parent = MainFrame
-    Button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    Button.Position = position
-    Button.Size = UDim2.new(0, 90, 0, 35)
-    Button.Font = Enum.Font.Gotham
-    Button.Text = text
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.TextSize = 12
-    
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 6)
-    Corner.Parent = Button
-    
-    local Indicator = Instance.new("Frame")
-    Indicator.Parent = Button
-    Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    Indicator.Position = UDim2.new(1, -20, 0.5, -6)
-    Indicator.Size = UDim2.new(0, 12, 0, 12)
-    Indicator.BorderSizePixel = 0
-    
-    local IndCorner = Instance.new("UICorner")
-    IndCorner.CornerRadius = UDim.new(1, 0)
-    IndCorner.Parent = Indicator
-    
-    return Button, Indicator
-end
-
 -- Criar Tabs
 local FireTab = createTab("Fire", 1)
 local TpTab = createTab("TP's", 2)
@@ -416,21 +387,13 @@ createButton(TpTab, "Click TP", function()
 end)
 
 createButton(TpTab, "Criminal", function()
-    pcall(function()
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = CFrame.new(-943, 95, 2063)
-            print("TP Criminal executado!")
-        end
-    end)
+    print("TP Criminal")
+    -- Adicionar código de TP aqui
 end)
 
 createButton(TpTab, "Camper", function()
-    pcall(function()
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = CFrame.new(726, 122, 2587)
-            print("TP Camper executado!")
-        end
-    end)
+    print("TP Camper")
+    -- Adicionar código de TP aqui
 end)
 
 createButton(TpTab, "Players", function()
@@ -474,7 +437,26 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-
+print("[VidaPrisao] Carregado com sucesso!"), 0, 35)
+    Button.Font = Enum.Font.Gotham
+    Button.Text = text
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextSize = 12
+    
+    BtnCorner.CornerRadius = UDim.new(0, 6)
+    BtnCorner.Parent = Button
+    
+    Indicator.Parent = Button
+    Indicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    Indicator.Position = UDim2.new(1, -20, 0.5, -8)
+    Indicator.Size = UDim2.new(0, 16, 0, 16)
+    Indicator.BorderSizePixel = 0
+    
+    IndicatorCorner.CornerRadius = UDim.new(1, 0)
+    IndicatorCorner.Parent = Indicator
+    
+    return Button, Indicator
+end
 
 local function createKeyBox(text, position)
     local Box = Instance.new("TextBox")
@@ -498,18 +480,6 @@ local flyKey = Enum.KeyCode.E
 local espKey = Enum.KeyCode.J
 local aimbotKey = Enum.KeyCode.X
 local ghostKey = Enum.KeyCode.G
-local tpMouseKey = Enum.KeyCode.Q
-local tpMouseEnabled = false
-
--- Indicadores (para compatibilidade)
-local flyIndicator = nil
-local espIndicator = nil
-local aimbotIndicator = nil
-local noclipIndicator = nil
-godmodeIndicator = nil
-autoCardIndicator = nil
-tpCriminalIndicator = nil
-tpCamperIndicator = nil
 
 local aimbotEnabled = false
 local aimbotFOV = 300
@@ -524,11 +494,6 @@ local ghostOverlay = nil
 
 local flying = false
 local bodyVelocity, bodyGyro
-
-godmodeEnabled = nil
-local godmodeConnections = {}
-
-local autoCardEnabled = false
 
 local function startFly()
     flying = true
@@ -703,7 +668,85 @@ local function disableESP()
     end
 end
 
+local tpCriminalBtn, tpCriminalIndicator = createSmallButton("Criminals", UDim2.new(0, 10, 0, 50))
 
+local tpCamperBtn, tpCamperIndicator = createSmallButton("Camper", UDim2.new(0, 110, 0, 50))
+
+local flyBtn, flyIndicator = createButton("Fly", UDim2.new(0, 10, 0, 95))
+local flyKeyBox = createKeyBox("E", UDim2.new(0, 145, 0, 95))
+
+local espBtn, espIndicator = createButton("ESP", UDim2.new(0, 10, 0, 140))
+local espKeyBox = createKeyBox("J", UDim2.new(0, 145, 0, 140))
+
+local aimbotBtn, aimbotIndicator = createButton("Aimbot", UDim2.new(0, 10, 0, 185))
+local aimbotKeyBox = createKeyBox("X", UDim2.new(0, 145, 0, 185))
+
+local noclipBtn, noclipIndicator = createButton("Ghost", UDim2.new(0, 10, 0, 230))
+local noclipKeyBox = createKeyBox("G", UDim2.new(0, 145, 0, 230))
+
+local godmodeBtn, godmodeIndicator = createSmallButton("Godmode", UDim2.new(0, 10, 0, 275))
+
+local autoCardBtn, autoCardIndicator = createSmallButton("Auto Card", UDim2.new(0, 110, 0, 275))
+
+local tpPlayerBtn = Instance.new("TextButton")
+tpPlayerBtn.Parent = MainFrame
+tpPlayerBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+tpPlayerBtn.Position = UDim2.new(0, 10, 0, 320)
+tpPlayerBtn.Size = UDim2.new(0, 135, 0, 35)
+tpPlayerBtn.Font = Enum.Font.Gotham
+tpPlayerBtn.Text = "TP Player"
+tpPlayerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpPlayerBtn.TextSize = 13
+
+local tpPlayerCorner = Instance.new("UICorner")
+tpPlayerCorner.CornerRadius = UDim.new(0, 6)
+tpPlayerCorner.Parent = tpPlayerBtn
+
+local tpArrow = Instance.new("TextLabel")
+tpArrow.Parent = tpPlayerBtn
+tpArrow.BackgroundTransparency = 1
+tpArrow.Position = UDim2.new(1, -20, 0, 0)
+tpArrow.Size = UDim2.new(0, 20, 1, 0)
+tpArrow.Font = Enum.Font.GothamBold
+tpArrow.Text = "▼"
+tpArrow.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpArrow.TextSize = 12
+
+local tpMouseBtn = Instance.new("TextButton")
+tpMouseBtn.Parent = MainFrame
+tpMouseBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+tpMouseBtn.Position = UDim2.new(0, 150, 0, 320)
+tpMouseBtn.Size = UDim2.new(0, 30, 0, 35)
+tpMouseBtn.Font = Enum.Font.Gotham
+tpMouseBtn.Text = ""
+tpMouseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpMouseBtn.TextSize = 13
+
+local tpMouseCorner = Instance.new("UICorner")
+tpMouseCorner.CornerRadius = UDim.new(0, 6)
+tpMouseCorner.Parent = tpMouseBtn
+
+local tpMouseIndicator = Instance.new("Frame")
+tpMouseIndicator.Parent = tpMouseBtn
+tpMouseIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+tpMouseIndicator.Position = UDim2.new(0.5, -8, 0.5, -8)
+tpMouseIndicator.Size = UDim2.new(0, 16, 0, 16)
+tpMouseIndicator.BorderSizePixel = 0
+
+local tpMouseIndicatorCorner = Instance.new("UICorner")
+tpMouseIndicatorCorner.CornerRadius = UDim.new(1, 0)
+tpMouseIndicatorCorner.Parent = tpMouseIndicator
+
+local tpMouseKeyBox = createKeyBox("Q", UDim2.new(0, 185, 0, 320))
+
+local tpMouseKey = Enum.KeyCode.Q
+local tpMouseEnabled = false
+
+local godmodeEnabled = false
+local godmodeConnections = {}
+
+local autoCardEnabled = false
+local autoCardLoop = nil
 
 local function enableGhostMode()
     if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
@@ -940,7 +983,198 @@ local function disableAutoCard()
     end
 end
 
+local PlayerListFrame = Instance.new("ScrollingFrame")
+PlayerListFrame.Parent = MainFrame
+PlayerListFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+PlayerListFrame.Position = UDim2.new(0, 10, 0, 365)
+PlayerListFrame.Size = UDim2.new(0, 200, 0, 0)
+PlayerListFrame.Visible = false
+PlayerListFrame.ScrollBarThickness = 6
+PlayerListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+PlayerListFrame.BorderSizePixel = 0
 
+local PlayerListCorner = Instance.new("UICorner")
+PlayerListCorner.CornerRadius = UDim.new(0, 8)
+PlayerListCorner.Parent = PlayerListFrame
+
+local PlayerListStroke = Instance.new("UIStroke")
+PlayerListStroke.Parent = PlayerListFrame
+PlayerListStroke.Color = Color3.fromRGB(0, 0, 0)
+PlayerListStroke.Thickness = 3
+
+local PlayerListLayout = Instance.new("UIListLayout")
+PlayerListLayout.Parent = PlayerListFrame
+PlayerListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+PlayerListLayout.Padding = UDim.new(0, 5)
+
+local function updatePlayerList()
+    for _, child in pairs(PlayerListFrame:GetChildren()) do
+        if child:IsA("Frame") then child:Destroy() end
+    end
+    
+    local yOffset = 0
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player then
+            local teamColor = Color3.fromRGB(60, 60, 60)
+            if plr.Team then
+                local teamName = plr.Team.Name
+                if teamName == "Guards" then
+                    teamColor = Color3.fromRGB(40, 80, 150)
+                elseif teamName == "Criminals" then
+                    teamColor = Color3.fromRGB(150, 40, 40)
+                elseif teamName == "Inmates" then
+                    teamColor = Color3.fromRGB(200, 120, 40)
+                end
+            end
+            
+            local PlayerFrame = Instance.new("Frame")
+            PlayerFrame.Parent = PlayerListFrame
+            PlayerFrame.BackgroundColor3 = teamColor
+            PlayerFrame.Size = UDim2.new(1, -10, 0, 50)
+            
+            local PlayerFrameCorner = Instance.new("UICorner")
+            PlayerFrameCorner.CornerRadius = UDim.new(0, 6)
+            PlayerFrameCorner.Parent = PlayerFrame
+            
+            local PlayerImage = Instance.new("ImageLabel")
+            PlayerImage.Parent = PlayerFrame
+            PlayerImage.BackgroundTransparency = 1
+            PlayerImage.Position = UDim2.new(0, 5, 0, 5)
+            PlayerImage.Size = UDim2.new(0, 40, 0, 40)
+            PlayerImage.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="..plr.UserId.."&width=48&height=48&format=png"
+            
+            local PlayerImageCorner = Instance.new("UICorner")
+            PlayerImageCorner.CornerRadius = UDim.new(1, 0)
+            PlayerImageCorner.Parent = PlayerImage
+            
+            local PlayerName = Instance.new("TextLabel")
+            PlayerName.Parent = PlayerFrame
+            PlayerName.BackgroundTransparency = 1
+            PlayerName.Position = UDim2.new(0, 50, 0, 5)
+            PlayerName.Size = UDim2.new(1, -95, 0, 20)
+            PlayerName.Font = Enum.Font.GothamBold
+            PlayerName.Text = plr.DisplayName
+            PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
+            PlayerName.TextSize = 13
+            PlayerName.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local PlayerUsername = Instance.new("TextLabel")
+            PlayerUsername.Parent = PlayerFrame
+            PlayerUsername.BackgroundTransparency = 1
+            PlayerUsername.Position = UDim2.new(0, 50, 0, 25)
+            PlayerUsername.Size = UDim2.new(1, -95, 0, 20)
+            PlayerUsername.Font = Enum.Font.Gotham
+            PlayerUsername.Text = "@" .. plr.Name
+            PlayerUsername.TextColor3 = Color3.fromRGB(180, 180, 180)
+            PlayerUsername.TextSize = 9
+            PlayerUsername.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local TpButton = Instance.new("TextButton")
+            TpButton.Parent = PlayerFrame
+            TpButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+            TpButton.Position = UDim2.new(1, -40, 0.5, -15)
+            TpButton.Size = UDim2.new(0, 35, 0, 30)
+            TpButton.Font = Enum.Font.GothamBold
+            TpButton.Text = "TP"
+            TpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TpButton.TextSize = 12
+            
+            local TpButtonCorner = Instance.new("UICorner")
+            TpButtonCorner.CornerRadius = UDim.new(0, 6)
+            TpButtonCorner.Parent = TpButton
+            
+            TpButton.MouseButton1Click:Connect(function()
+                pcall(function()
+                    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            player.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+                        end
+                    end
+                end)
+            end)
+            
+            yOffset = yOffset + 55
+        end
+    end
+    PlayerListFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
+end
+
+tpPlayerBtn.MouseButton1Click:Connect(function()
+    PlayerListFrame.Visible = not PlayerListFrame.Visible
+    if PlayerListFrame.Visible then
+        updatePlayerList()
+        PlayerListFrame.Size = UDim2.new(0, 200, 0, math.min(200, #game.Players:GetPlayers() * 55))
+        tpArrow.Text = "▲"
+    else
+        PlayerListFrame.Size = UDim2.new(0, 200, 0, 0)
+        tpArrow.Text = "▼"
+    end
+end)
+
+tpMouseBtn.MouseButton1Click:Connect(function()
+    tpMouseEnabled = not tpMouseEnabled
+    if tpMouseEnabled then
+        tpMouseIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        tpMouseIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
+
+tpMouseKeyBox.FocusLost:Connect(function()
+    local text = tpMouseKeyBox.Text:upper()
+    local success, key = pcall(function() return Enum.KeyCode[text] end)
+    if success and key then
+        tpMouseKey = key
+        tpMouseKeyBox.Text = text
+    else
+        tpMouseKeyBox.Text = "Q"
+        tpMouseKey = Enum.KeyCode.Q
+    end
+end)
+
+tpCriminalBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(-943, 95, 2063)
+            tpCriminalIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+            task.wait(0.3)
+            tpCriminalIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        end
+    end)
+end)
+
+tpCamperBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(726, 122, 2587)
+            tpCamperIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+            task.wait(0.3)
+            tpCamperIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        end
+    end)
+end)
+
+flyBtn.MouseButton1Click:Connect(function()
+    flying = not flying
+    if flying then
+        startFly()
+        flyIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        stopFly()
+        flyIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
+
+espBtn.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    if espEnabled then
+        enableESP()
+        espIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        disableESP()
+        espIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
 
 local function getClosestEnemy()
     local mouse = player:GetMouse()
@@ -994,10 +1228,99 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
+aimbotBtn.MouseButton1Click:Connect(function()
+    aimbotEnabled = not aimbotEnabled
+    if aimbotEnabled then
+        aimbotIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        aimbotIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
 
+noclipBtn.MouseButton1Click:Connect(function()
+    if not ghostEnabled then
+        ghostEnabled = true
+        enableGhostMode()
+        noclipIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        ghostEnabled = false
+        disableGhostMode(true)
+        noclipIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
+
+godmodeBtn.MouseButton1Click:Connect(function()
+    godmodeEnabled = not godmodeEnabled
+    if godmodeEnabled then
+        enableGodmode()
+        godmodeIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        disableGodmode()
+        godmodeIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
+
+autoCardBtn.MouseButton1Click:Connect(function()
+    autoCardEnabled = not autoCardEnabled
+    if autoCardEnabled then
+        enableAutoCard()
+        autoCardIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+    else
+        disableAutoCard()
+        autoCardIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    end
+end)
 
 rejoinBtn.MouseButton1Click:Connect(function()
-    TeleportService:Teleport(game.PlaceId, player)
+    TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+end)
+
+flyKeyBox.FocusLost:Connect(function()
+    local text = flyKeyBox.Text:upper()
+    local success, key = pcall(function() return Enum.KeyCode[text] end)
+    if success and key then
+        flyKey = key
+        flyKeyBox.Text = text
+    else
+        flyKeyBox.Text = "E"
+        flyKey = Enum.KeyCode.E
+    end
+end)
+
+espKeyBox.FocusLost:Connect(function()
+    local text = espKeyBox.Text:upper()
+    local success, key = pcall(function() return Enum.KeyCode[text] end)
+    if success and key then
+        espKey = key
+        espKeyBox.Text = text
+    else
+        espKeyBox.Text = "J"
+        espKey = Enum.KeyCode.J
+    end
+end)
+
+aimbotKeyBox.FocusLost:Connect(function()
+    local text = aimbotKeyBox.Text:upper()
+    local success, key = pcall(function() return Enum.KeyCode[text] end)
+    if success and key then
+        aimbotKey = key
+        aimbotKeyBox.Text = text
+    else
+        aimbotKeyBox.Text = "X"
+        aimbotKey = Enum.KeyCode.X
+    end
+end)
+
+noclipKeyBox.FocusLost:Connect(function()
+    local text = noclipKeyBox.Text:upper()
+    local success, key = pcall(function() return Enum.KeyCode[text] end)
+    if success and key then
+        ghostKey = key
+        noclipKeyBox.Text = text
+    else
+        noclipKeyBox.Text = "G"
+        ghostKey = Enum.KeyCode.G
+    end
 end)
 
 UIS.InputBegan:Connect(function(input, gameProcessed)
@@ -1015,6 +1338,7 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
         else
             MainFrame.Visible = not MainFrame.Visible
             SettingsFrame.Visible = false
+            PlayerListFrame.Visible = false
         end
     elseif input.KeyCode == tpMouseKey and tpMouseEnabled then
         pcall(function()
