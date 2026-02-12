@@ -997,6 +997,8 @@ end)
 
 
 rejoinBtn.MouseButton1Click:Connect(function()
+    TeleportService:Teleport(game.PlaceId, player)
+end)
 
 UIS.InputBegan:Connect(function(input, gameProcessed)
     if input.UserInputType == Enum.UserInputType.MouseButton2 then
@@ -1013,7 +1015,6 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
         else
             MainFrame.Visible = not MainFrame.Visible
             SettingsFrame.Visible = false
-            PlayerListFrame.Visible = false
         end
     elseif input.KeyCode == tpMouseKey and tpMouseEnabled then
         pcall(function()
