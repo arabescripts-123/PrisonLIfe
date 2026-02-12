@@ -1,16 +1,28 @@
--- Beginning of Fixed VidaPrisao_Main.lua
+-- VidaPrisao_Main.lua
 
--- ... other content of the script ...
+-- Main execution flow for the game
 
--- Function definition for createSmallButton
-function createSmallButton() 
-    -- Implementation of the createSmallButton function
+local success, err = pcall(function()
+    -- Initialize game assets
+    print("Initializing game assets...")
+    -- Add code to load assets here
+
+    -- Main game loop
+    while true do
+        -- Check if game is running
+        if not isGameRunning() then
+            error("Game is not running!")
+        end
+
+        -- Execute game logic
+        print("Executing game logic...")
+        -- Add code for game logic here
+
+        -- Sleep to prevent busy-waiting
+        wait(1)
+    end
+end)
+
+if not success then
+    print("An error occurred: " .. err)
 end
-
--- ... lines 440 and 441-459 have been removed ...
-
--- Ensure valid syntax from here on
-
--- ... rest of the script starting from line 671 ...
-
--- End of Fixed VidaPrisao_Main.lua
