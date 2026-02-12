@@ -416,13 +416,21 @@ createButton(TpTab, "Click TP", function()
 end)
 
 createButton(TpTab, "Criminal", function()
-    print("TP Criminal")
-    -- Adicionar código de TP aqui
+    pcall(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(-943, 95, 2063)
+            print("TP Criminal executado!")
+        end
+    end)
 end)
 
 createButton(TpTab, "Camper", function()
-    print("TP Camper")
-    -- Adicionar código de TP aqui
+    pcall(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(726, 122, 2587)
+            print("TP Camper executado!")
+        end
+    end)
 end)
 
 createButton(TpTab, "Players", function()
@@ -678,85 +686,7 @@ local function disableESP()
     end
 end
 
-local tpCriminalBtn, tpCriminalIndicator = createSmallButton("Criminals", UDim2.new(0, 10, 0, 50))
 
-local tpCamperBtn, tpCamperIndicator = createSmallButton("Camper", UDim2.new(0, 110, 0, 50))
-
-local flyBtn, flyIndicator = createButton("Fly", UDim2.new(0, 10, 0, 95))
-local flyKeyBox = createKeyBox("E", UDim2.new(0, 145, 0, 95))
-
-local espBtn, espIndicator = createButton("ESP", UDim2.new(0, 10, 0, 140))
-local espKeyBox = createKeyBox("J", UDim2.new(0, 145, 0, 140))
-
-local aimbotBtn, aimbotIndicator = createButton("Aimbot", UDim2.new(0, 10, 0, 185))
-local aimbotKeyBox = createKeyBox("X", UDim2.new(0, 145, 0, 185))
-
-local noclipBtn, noclipIndicator = createButton("Ghost", UDim2.new(0, 10, 0, 230))
-local noclipKeyBox = createKeyBox("G", UDim2.new(0, 145, 0, 230))
-
-local godmodeBtn, godmodeIndicator = createSmallButton("Godmode", UDim2.new(0, 10, 0, 275))
-
-local autoCardBtn, autoCardIndicator = createSmallButton("Auto Card", UDim2.new(0, 110, 0, 275))
-
-local tpPlayerBtn = Instance.new("TextButton")
-tpPlayerBtn.Parent = MainFrame
-tpPlayerBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-tpPlayerBtn.Position = UDim2.new(0, 10, 0, 320)
-tpPlayerBtn.Size = UDim2.new(0, 135, 0, 35)
-tpPlayerBtn.Font = Enum.Font.Gotham
-tpPlayerBtn.Text = "TP Player"
-tpPlayerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-tpPlayerBtn.TextSize = 13
-
-local tpPlayerCorner = Instance.new("UICorner")
-tpPlayerCorner.CornerRadius = UDim.new(0, 6)
-tpPlayerCorner.Parent = tpPlayerBtn
-
-local tpArrow = Instance.new("TextLabel")
-tpArrow.Parent = tpPlayerBtn
-tpArrow.BackgroundTransparency = 1
-tpArrow.Position = UDim2.new(1, -20, 0, 0)
-tpArrow.Size = UDim2.new(0, 20, 1, 0)
-tpArrow.Font = Enum.Font.GothamBold
-tpArrow.Text = "▼"
-tpArrow.TextColor3 = Color3.fromRGB(255, 255, 255)
-tpArrow.TextSize = 12
-
-local tpMouseBtn = Instance.new("TextButton")
-tpMouseBtn.Parent = MainFrame
-tpMouseBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-tpMouseBtn.Position = UDim2.new(0, 150, 0, 320)
-tpMouseBtn.Size = UDim2.new(0, 30, 0, 35)
-tpMouseBtn.Font = Enum.Font.Gotham
-tpMouseBtn.Text = ""
-tpMouseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-tpMouseBtn.TextSize = 13
-
-local tpMouseCorner = Instance.new("UICorner")
-tpMouseCorner.CornerRadius = UDim.new(0, 6)
-tpMouseCorner.Parent = tpMouseBtn
-
-local tpMouseIndicator = Instance.new("Frame")
-tpMouseIndicator.Parent = tpMouseBtn
-tpMouseIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-tpMouseIndicator.Position = UDim2.new(0.5, -8, 0.5, -8)
-tpMouseIndicator.Size = UDim2.new(0, 16, 0, 16)
-tpMouseIndicator.BorderSizePixel = 0
-
-local tpMouseIndicatorCorner = Instance.new("UICorner")
-tpMouseIndicatorCorner.CornerRadius = UDim.new(1, 0)
-tpMouseIndicatorCorner.Parent = tpMouseIndicator
-
-local tpMouseKeyBox = createKeyBox("Q", UDim2.new(0, 185, 0, 320))
-
-local tpMouseKey = Enum.KeyCode.Q
-local tpMouseEnabled = false
-
-local godmodeEnabled = false
-local godmodeConnections = {}
-
-local autoCardEnabled = false
-local autoCardLoop = nil
 
 local function enableGhostMode()
     if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
